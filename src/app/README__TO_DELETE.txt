@@ -1,0 +1,1 @@
+This folder has been migrated to src/app. Safe to delete after verifying migration.
