@@ -14,7 +14,13 @@
       "Bash(Select-Object -First 100)",
       "Bash(Format-List FullName)",
       "Bash(npm install *)",
-      "Bash(npx drizzle-kit *)"
+      "Bash(npx drizzle-kit *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\AIProjects2026\\\\homza\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Select-Object Name, PSIsContainer, Mode)",
+      "Bash(dir C:\\\\AIProjects2026\\\\homza\\\\.env*)",
+      "mcp__neon__run_sql",
+      "mcp__neon__run_sql_transaction"
     ]
   },
   "enabledMcpjsonServers": [

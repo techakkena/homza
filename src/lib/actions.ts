@@ -7,7 +7,10 @@ import {
   updateItem,
   deleteItem,
   createCategory,
+  updateCategory,
+  deleteCategory,
   createPurchaseWithInventoryUpdate,
+  createConsumption,
   updateItemStock,
   markNotificationRead,
   markAllNotificationsRead,
@@ -87,9 +90,55 @@ export async function addCategoryAction(formData: FormData) {
   const name = formData.get('name') as string;
   const description = (formData.get('description') as string) || undefined;
   if (!name) return { success: false, error: 'Name required' };
-  const cat = await createCategory(name, description);
-  revalidatePath('/items');
-  return { success: true, category: cat };
+  try {
+    const cat = await createCategory(name, description);
+    revalidatePath('/items');
+    return { success: true, category: cat };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Failed' };
+  }
+}
+
+export async function updateCategoryAction(id: number, data: { name?: string; description?: string }) {
+  await requireUser();
+  try {
+    const cat = await updateCategory(id, data);
+    revalidatePath('/items');
+    return { success: true, category: cat };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to update' };
+  }
+}
+
+export async function deleteCategoryAction(id: number) {
+  await requireUser();
+  try {
+    await deleteCategory(id);
+    revalidatePath('/items');
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Failed to delete' };
+  }
+}
+
+// ── Consumption ────────────────────────────────────────────────────────────
+
+export async function recordConsumptionAction(data: {
+  itemId: number;
+  qty: string;
+  notes?: string;
+}) {
+  const user = await requireUser();
+  try {
+    const consumption = await createConsumption({ ...data, userId: user.id });
+    revalidatePath('/dashboard');
+    revalidatePath('/items');
+    revalidatePath('/reports');
+    return { success: true, consumption };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Failed to record consumption';
+    return { success: false, error: msg };
+  }
 }
 
 // ── Purchases ─────────────────────────────────────────────────────────────

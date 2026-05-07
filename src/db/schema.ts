@@ -165,6 +165,26 @@ export const notifications = pgTable(
   ],
 );
 
+// ── consumptions ─────────────────────────────────────────────────────────────
+
+export const consumptions = pgTable(
+  'consumptions',
+  {
+    id: serial('id').primaryKey(),
+    itemId: integer('item_id').notNull().references(() => items.id),
+    userId: integer('user_id').references(() => users.id),
+    qty: numeric('qty', { precision: 10, scale: 3 }).notNull(),
+    notes: text('notes'),
+    consumedAt: timestamp('consumed_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (t) => [
+    index('consumptions_item_id_idx').on(t.itemId),
+    index('consumptions_user_id_idx').on(t.userId),
+    index('consumptions_consumed_at_idx').on(t.consumedAt),
+  ]
+);
+
 // ── relations ─────────────────────────────────────────────────────────────────
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -190,6 +210,18 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
   }),
   purchases: many(purchases),
   inventoryLogs: many(inventoryLogs),
+  consumptions: many(consumptions),
+}));
+
+export const consumptionsRelations = relations(consumptions, ({ one }) => ({
+  item: one(items, {
+    fields: [consumptions.itemId],
+    references: [items.id],
+  }),
+  user: one(users, {
+    fields: [consumptions.userId],
+    references: [users.id],
+  }),
 }));
 
 export const purchasesRelations = relations(purchases, ({ one, many }) => ({
