@@ -33,17 +33,18 @@ import {
 import { cn } from '@/lib/utils';
 import type { ItemWithDetails } from '@/src/lib/queries';
 import { deleteItemAction } from '@/src/lib/actions';
+import { useLanguage } from '@/lib/i18n/language-context';
 
 type Category = { id: number; name: string };
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(n);
 
-function stockStatus(qty: number) {
-  if (qty === 0) return { label: 'Out of Stock', variant: 'destructive' as const, rowClass: 'bg-red-50' };
-  if (qty <= 5) return { label: 'Critical', variant: 'destructive' as const, rowClass: 'bg-red-50' };
-  if (qty <= 10) return { label: 'Low', variant: 'warning' as const, rowClass: 'bg-amber-50' };
-  return { label: 'OK', variant: 'success' as const, rowClass: '' };
+function stockStatus(qty: number, t: { outOfStock: string; critical: string; low: string; ok: string }) {
+  if (qty === 0) return { label: t.outOfStock, variant: 'destructive' as const, rowClass: 'bg-red-50' };
+  if (qty <= 5) return { label: t.critical, variant: 'destructive' as const, rowClass: 'bg-red-50' };
+  if (qty <= 10) return { label: t.low, variant: 'warning' as const, rowClass: 'bg-amber-50' };
+  return { label: t.ok, variant: 'success' as const, rowClass: '' };
 }
 
 export function ItemsTable({
@@ -54,6 +55,7 @@ export function ItemsTable({
   categories: Category[];
 }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState('name');
@@ -91,17 +93,17 @@ export function ItemsTable({
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <Input
-          placeholder="Search items..."
+          placeholder={t.common.search}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="max-w-xs"
         />
         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
           <SelectTrigger className="w-44">
-            <SelectValue placeholder="All categories" />
+            <SelectValue placeholder={t.common.allCategories} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all">{t.common.allCategories}</SelectItem>
             {categories.map(c => (
               <SelectItem key={c.id} value={String(c.id)}>
                 {c.name}
@@ -110,14 +112,14 @@ export function ItemsTable({
           </SelectContent>
         </Select>
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="name">Sort: Name</SelectItem>
-            <SelectItem value="stock">Sort: Stock ↑</SelectItem>
-            <SelectItem value="price">Sort: Price ↓</SelectItem>
-            <SelectItem value="last">Sort: Last Purchase</SelectItem>
+            <SelectItem value="name">{t.common.sortName}</SelectItem>
+            <SelectItem value="stock">{t.common.sortStock}</SelectItem>
+            <SelectItem value="price">{t.common.sortPrice}</SelectItem>
+            <SelectItem value="last">{t.common.sortLastPurchase}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -127,17 +129,17 @@ export function ItemsTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Item</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead>{t.common.colItem}</TableHead>
+              <TableHead>{t.common.colCategory}</TableHead>
               <TableHead>
                 <div className="flex items-center gap-1">
-                  Stock <ArrowUpDown className="h-3 w-3" />
+                  {t.common.colStock} <ArrowUpDown className="h-3 w-3" />
                 </div>
               </TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Total Value</TableHead>
-              <TableHead>Last Purchase</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{t.common.colPrice}</TableHead>
+              <TableHead>{t.common.colValue}</TableHead>
+              <TableHead>{t.common.colLastPurchase}</TableHead>
+              <TableHead>{t.common.colStatus}</TableHead>
               <TableHead className="w-20" />
             </TableRow>
           </TableHeader>
@@ -145,13 +147,13 @@ export function ItemsTable({
             {items.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className="text-center text-muted-foreground py-10">
-                  No items found
+                  {t.common.noItemsFound}
                 </TableCell>
               </TableRow>
             ) : (
               items.map(item => {
                 const qty = parseFloat(item.stockQty);
-                const status = stockStatus(qty);
+                const status = stockStatus(qty, t.common);
                 return (
                   <TableRow key={item.id} className={cn(status.rowClass)}>
                     <TableCell className="font-medium">{item.name}</TableCell>
@@ -166,7 +168,7 @@ export function ItemsTable({
                     <TableCell className="text-sm text-muted-foreground">
                       {item.lastPurchasedAt
                         ? formatDistanceToNow(new Date(item.lastPurchasedAt), { addSuffix: true })
-                        : 'Never'}
+                        : t.common.never}
                     </TableCell>
                     <TableCell>
                       <Badge variant={status.variant}>{status.label}</Badge>
@@ -202,17 +204,15 @@ export function ItemsTable({
       <Dialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Item</DialogTitle>
-            <DialogDescription>
-              This item will be marked inactive. Existing purchase history is preserved.
-            </DialogDescription>
+            <DialogTitle>{t.common.deleteItem}</DialogTitle>
+            <DialogDescription>{t.common.deleteItemDesc}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteId(null)}>
-              Cancel
+              {t.common.cancel}
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
-              Delete
+              {t.common.delete}
             </Button>
           </DialogFooter>
         </DialogContent>

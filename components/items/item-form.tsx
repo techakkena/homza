@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { addItemAction, editItemAction, addCategoryAction } from '@/src/lib/actions';
+import { useLanguage } from '@/lib/i18n/language-context';
 
 type Category = { id: number; name: string };
 
@@ -35,6 +36,7 @@ type Props = {
 
 export function ItemForm({ categories: initialCategories, editItem }: Props) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isPending, startTransition] = useTransition();
   const [categories, setCategories] = useState(initialCategories);
   const [newCategory, setNewCategory] = useState('');
@@ -102,7 +104,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
     <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
       {/* Name with autocomplete */}
       <div className="space-y-1.5 relative">
-        <Label htmlFor="name">Item Name *</Label>
+        <Label htmlFor="name">{t.items.itemName} *</Label>
         <Input
           id="name"
           value={form.name}
@@ -127,11 +129,11 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
 
       {/* Category */}
       <div className="space-y-1.5">
-        <Label>Category *</Label>
+        <Label>{t.items.category} *</Label>
         <div className="flex gap-2">
           <Select value={form.categoryId} onValueChange={set('categoryId')}>
             <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Select category" />
+              <SelectValue placeholder={t.items.selectCategory} />
             </SelectTrigger>
             <SelectContent>
               {categories.map(c => (
@@ -143,13 +145,13 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
           </Select>
           <div className="flex gap-1">
             <Input
-              placeholder="New category"
+              placeholder={t.items.newCategory}
               value={newCategory}
               onChange={e => setNewCategory(e.target.value)}
               className="w-32"
             />
             <Button type="button" variant="outline" onClick={handleAddCategory}>
-              Add
+              {t.common.add}
             </Button>
           </div>
         </div>
@@ -158,7 +160,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
       {/* Unit + Quantity */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label>Unit *</Label>
+          <Label>{t.items.unit} *</Label>
           <Select value={form.unit} onValueChange={set('unit')}>
             <SelectTrigger>
               <SelectValue />
@@ -173,7 +175,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="qty">Quantity *</Label>
+          <Label htmlFor="qty">{t.items.quantity} *</Label>
           <Input
             id="qty"
             name="stockQty"
@@ -189,7 +191,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
 
       {/* Price */}
       <div className="space-y-1.5">
-        <Label htmlFor="price">Price per {form.unit} (₹) *</Label>
+        <Label htmlFor="price">{t.items.price} {form.unit} (₹) *</Label>
         <Input
           id="price"
           name="price"
@@ -205,7 +207,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
       {/* Total cost display */}
       {parseFloat(totalCost) > 0 && (
         <div className="rounded-md bg-primary/5 border border-primary/20 px-4 py-2 text-sm">
-          <span className="text-muted-foreground">Total cost: </span>
+          <span className="text-muted-foreground">{t.items.totalCost}: </span>
           <span className="font-semibold text-primary">
             ₹{parseFloat(totalCost).toLocaleString('en-IN')}
           </span>
@@ -214,7 +216,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
 
       {/* SKU + Description */}
       <div className="space-y-1.5">
-        <Label htmlFor="sku">SKU (optional)</Label>
+        <Label htmlFor="sku">{t.items.sku} ({t.common.optional})</Label>
         <Input
           id="sku"
           value={form.sku}
@@ -223,7 +225,7 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="desc">Notes (optional)</Label>
+        <Label htmlFor="desc">{t.items.notes} ({t.common.optional})</Label>
         <Textarea
           id="desc"
           value={form.description}
@@ -237,10 +239,10 @@ export function ItemForm({ categories: initialCategories, editItem }: Props) {
 
       <div className="flex gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending ? 'Saving…' : editItem ? 'Update Item' : 'Add Item'}
+          {isPending ? t.common.saving : editItem ? t.items.updateItemBtn : t.items.addItemBtn}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Cancel
+          {t.common.cancel}
         </Button>
       </div>
     </form>

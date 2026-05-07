@@ -21,7 +21,8 @@
       "Bash(dir C:\\\\AIProjects2026\\\\homza\\\\.env*)",
       "mcp__neon__run_sql",
       "mcp__neon__run_sql_transaction",
-      "PowerShell(Get-Content *)"
+      "PowerShell(Get-Content *)",
+      "Bash(npx next *)"
     ]
   },
   "enabledMcpjsonServers": [

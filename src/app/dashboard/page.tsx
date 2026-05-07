@@ -6,6 +6,7 @@ import { checkAndCreateNotifications } from '@/src/lib/notifications';
 import { StatsCards } from '@/components/dashboard/stats-cards';
 import { ItemsTable } from '@/components/dashboard/items-table';
 import { InsightsDashboard } from '@/components/insights/spending-chart';
+import { DashboardHeader, DashboardSectionTitle } from '@/components/dashboard/dashboard-header';
 import {
   getMonthlySpending,
   getCategorySpending,
@@ -45,20 +46,17 @@ export default async function DashboardPage({
 
   return (
     <div className="p-6 space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Your household inventory at a glance</p>
-      </div>
+      <DashboardHeader />
 
       <StatsCards stats={stats} />
 
       <div>
-        <h2 className="text-base font-semibold mb-4">Inventory</h2>
+        <DashboardSectionTitle section="inventory" />
         <ItemsTable initialItems={items} categories={categories} />
       </div>
 
       <div>
-        <h2 className="text-base font-semibold mb-4">Smart Insights</h2>
+        <DashboardSectionTitle section="insights" />
         <InsightsDashboard
           monthly={monthly}
           categories={catSpend}

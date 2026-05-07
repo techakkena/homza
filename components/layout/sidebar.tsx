@@ -10,21 +10,23 @@ import {
   Home,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/items',     label: 'Items',     icon: Package },
-  { href: '/shopping',  label: 'Shopping',  icon: ShoppingCart },
-  { href: '/reports',   label: 'Reports',   icon: BarChart2 },
-];
+import { useLanguage } from '@/lib/i18n/language-context';
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { href: '/dashboard', label: t.nav.dashboard, icon: LayoutDashboard },
+    { href: '/items',     label: t.nav.items,     icon: Package          },
+    { href: '/shopping',  label: t.nav.shopping,  icon: ShoppingCart     },
+    { href: '/reports',   label: t.nav.reports,   icon: BarChart2        },
+  ];
 
   return (
     <aside className="hidden md:flex w-56 flex-col border-r border-sidebar-border bg-sidebar shrink-0">
 
-      {/* Brand section — links to home */}
+      {/* Brand — links to home */}
       <Link
         href="/"
         className="flex h-14 items-center gap-2.5 px-4 border-b border-white/15 hover:bg-white/10 transition-colors"
@@ -62,6 +64,14 @@ export function Sidebar() {
 
 export function MobileNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { href: '/dashboard', label: t.nav.dashboard, icon: LayoutDashboard },
+    { href: '/items',     label: t.nav.items,     icon: Package          },
+    { href: '/shopping',  label: t.nav.shopping,  icon: ShoppingCart     },
+    { href: '/reports',   label: t.nav.reports,   icon: BarChart2        },
+  ];
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 flex md:hidden border-t border-white/15 bg-sidebar">

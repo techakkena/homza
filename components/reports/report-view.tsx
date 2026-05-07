@@ -19,6 +19,7 @@ import {
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLanguage } from '@/lib/i18n/language-context';
 
 type MonthlyData = { month: string; total: number };
 type CategoryData = { category: string; total: number };
@@ -37,6 +38,7 @@ export function ReportView({
   categories: CategoryData[];
   frequency: FrequencyData[];
 }) {
+  const { t } = useLanguage();
   const [downloading, setDownloading] = useState(false);
 
   const downloadCSV = async () => {
@@ -58,23 +60,23 @@ export function ReportView({
     <div className="space-y-6">
       {/* Header + download */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Reports & Analytics</h2>
+        <h2 className="text-lg font-semibold">{t.reports.reportsAnalytics}</h2>
         <Button variant="outline" onClick={downloadCSV} disabled={downloading}>
           <Download className="h-4 w-4 mr-2" />
-          {downloading ? 'Downloading…' : 'Export CSV'}
+          {downloading ? t.common.downloading : t.reports.exportCSV}
         </Button>
       </div>
 
       {!hasData ? (
         <div className="rounded-lg border border-dashed p-16 text-center">
-          <p className="text-muted-foreground">No purchase data yet. Start adding purchases to see reports.</p>
+          <p className="text-muted-foreground">{t.reports.noData}</p>
         </div>
       ) : (
         <>
           {/* Monthly bar chart */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Monthly Expenditure</CardTitle>
+              <CardTitle className="text-sm">{t.reports.monthlyExpenditure}</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={260}>
@@ -83,7 +85,7 @@ export function ReportView({
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} tickFormatter={v => `₹${v}`} />
                   <Tooltip
-                    formatter={(v) => [fmt(Number(v) || 0), 'Total Spend']}
+                    formatter={(v) => [fmt(Number(v) || 0), t.reports.totalSpend]}
                     contentStyle={{ fontSize: 12, borderRadius: 8 }}
                   />
                   <Bar dataKey="total" fill="#0D9488" radius={[4, 4, 0, 0]} />
@@ -97,7 +99,7 @@ export function ReportView({
             {categories.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Category-wise Spending</CardTitle>
+                  <CardTitle className="text-sm">{t.reports.categorySpending}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={240}>
@@ -126,7 +128,7 @@ export function ReportView({
             {frequency.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-sm">Purchase Frequency (Top Items)</CardTitle>
+                  <CardTitle className="text-sm">{t.reports.purchaseFrequency}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={240}>
