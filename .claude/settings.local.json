@@ -20,7 +20,8 @@
       "Bash(Select-Object Name, PSIsContainer, Mode)",
       "Bash(dir C:\\\\AIProjects2026\\\\homza\\\\.env*)",
       "mcp__neon__run_sql",
-      "mcp__neon__run_sql_transaction"
+      "mcp__neon__run_sql_transaction",
+      "PowerShell(Get-Content *)"
     ]
   },
   "enabledMcpjsonServers": [
